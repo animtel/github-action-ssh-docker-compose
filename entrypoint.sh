@@ -10,12 +10,12 @@ cleanup() {
   log "Killing ssh agent."
   ssh-agent -k
   log "Removing workspace archive."
-  rm -f /tmp/\$DEPLOY_DIR_NAME.tar.bz2
+  rm -f /tmp/workspace.tar.bz2
 }
 trap cleanup EXIT
 
 log "Packing workspace into archive to transfer onto remote machine."
-tar cjvf /tmp/\$DEPLOY_DIR_NAME.tar.bz2 --exclude .git .
+tar cjvf /tmp/workspace.tar.bz2 --exclude .git .
 
 log "Launching ssh agent."
 eval `ssh-agent -s`
@@ -31,4 +31,4 @@ echo ">> [local] Connecting to remote host."
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
   "$SSH_USER@$SSH_HOST" -p "$SSH_PORT" \
   "$remote_command" \
-  < /tmp/\$DEPLOY_DIR_NAME.tar.bz2
+  < /tmp/workspace.tar.bz2
